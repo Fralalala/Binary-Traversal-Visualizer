@@ -1,31 +1,38 @@
-.home {
-  background: rgb(136, 136, 136);
-  height: 100%;
+.home-container {
+  height: calc(100vh - 76px);
+  // height: max-content;
+  // width: max-content;
 }
 
 ul {
   list-style: none;
-  display: flex;
   height: 100%;
   padding: 20px;
-
-  li {
-      margin: 10px;
-  }
-
+  display: grid;
+  grid-template-columns: 1fr 3fr 1fr;
+  grid-template-rows: minmax(150px, 1fr);
+  gap: 20px;
 }
 
 .m-1 {
-  background-color: purple;
-  flex-grow: 1;
-}   
+  background-color: lightcoral;
+  width: 300px;
+
+}
 
 .m-2 {
   background-color: lightgreen;
-  flex-grow: 2;
+  overflow-wrap: break-word;
+  min-width: 500px;
 }
 
 .m-3 {
-  background: lightgoldenrodyellow;
-  flex-grow: 1;
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: auto 1fr;
+  border: 5px dotted lightpink;
+  border-style: solid;
+  border-radius: 5px;
 }
+
+ 

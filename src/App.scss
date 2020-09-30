@@ -1,21 +1,8 @@
 @import "./styles/base";
-
-$flexGrowAmount: (1, 2, 1);
+@import "./styles/m-3";
 
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  
-}
-
-html, body, #root, .App {
-    height: 100%;
-    width: 100%;
-    margin: 0;
-}
-
-.App {
-    display: flex;
-  flex-flow: column;
 }

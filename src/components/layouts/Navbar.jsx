@@ -46,8 +46,8 @@ const Navbar = () => {
           <Typography variant="h6" className={classes.title}>
             Graph and Binary Tree Traversal Visualizer
           </Typography>
-          <Button variant="contained" color="default" Binary Tree className={classes.binaryBtn} >Binary Tree</Button>
-          <Button variant="contained" color="default" Graph className={classes.graphBtn} >Graph</Button>
+          <Button variant="contained" color="default" className={classes.binaryBtn} >Binary Tree</Button>
+          <Button variant="contained" color="default" className={classes.graphBtn} >Graph</Button>
         </Toolbar>
       </AppBar>
     </div>

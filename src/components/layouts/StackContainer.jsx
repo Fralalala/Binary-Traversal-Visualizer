@@ -1,11 +1,11 @@
-import React from 'react'
+import React from "react";
 
-const StackCOntainer = () => {
-    return (
-        <div>
-            StackContianer LALALLALALAL
-        </div>
-    )
-}
+const StackContainer = () => {
+  return (
+    <div className="stackContainer">
+      
+    </div>
+  );
+};
 
-export default StackCOntainer
+export default StackContainer;

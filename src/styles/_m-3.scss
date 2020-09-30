@@ -1,0 +1,27 @@
+.toolsContainer {
+  display: block;
+  text-align: center;
+  margin: auto;
+  max-width: max-content;
+  padding: 10px;
+  min-width: 50px;
+}
+
+#scroller {
+  width: max-content;
+}
+
+.danacont {
+  justify-content: center;
+  text-align: center;
+}
+
+.logsContainer {
+    padding: 15px;
+}
+
+.toolBtns {
+  display: flex;
+  justify-content: space-around;
+  padding: 5px;
+}
