@@ -11,8 +11,6 @@ const Home = () => {
 
   const {rootNode} = visualizerContext; 
 
-  console.log(rootNode)
-
   return (
     <div className="home-container" >
       <ul>

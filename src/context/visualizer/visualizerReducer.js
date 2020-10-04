@@ -1,8 +1,10 @@
-import { GENERATE_NODE_TREE ,SET_SPACING} from "../types";
+import { GENERATE_NODE_TREE ,SET_SPACING, GNT_BTN_CLICKED} from "../types";
 
 export default (state, action) => {
-  switch (action) {
+  switch (action.type) {
     case GENERATE_NODE_TREE:
+
+    console.log("reducer gen node tree")
       return {
         ...state,
         rootNode: action.payload,
@@ -12,6 +14,12 @@ export default (state, action) => {
       return {
         ...state,
         maxHeight: action.payload
+      }
+    
+    case GNT_BTN_CLICKED:
+      return {
+        ...state,
+        gntBtn: action.payload
       }
 
     default:

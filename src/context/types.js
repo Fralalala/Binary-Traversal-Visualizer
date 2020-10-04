@@ -1,2 +1,3 @@
 export const GENERATE_NODE_TREE = "GENERATE_NODE_TREE"
 export const SET_SPACING = "SET_SPACING"
+export const GNT_BTN_CLICKED = "GNT_BTN_CLICKED"
