@@ -1,15 +1,24 @@
 .toolsContainer {
-  display: block;
   text-align: center;
-  margin: auto;
-  max-width: max-content;
   padding: 10px;
-  min-width: 50px;
+  // background-color: lightcoral;
+
+  display: flex;
+  flex-flow: column;
+  max-width: max-content;
+  justify-content: center;
 }
 
-#scroller {
-  width: max-content;
+.scrollerContainer {
+  max-width: fit-content;
+  // background: blue;
+  margin: auto;
 }
+
+// #scroller { 
+//   width: max-content;
+//   justify-self: center;
+// }
 
 .danacont {
   justify-content: center;
@@ -24,4 +33,27 @@
   display: flex;
   justify-content: space-around;
   padding: 5px;
+  // background-color: lightblue;
+}
+
+.addAndDelete {
+  // background-color: bisque;
+  display: flex;
+  padding: 15px;
+}
+
+.textContainer {
+  max-width: 100px;
+}
+
+.child {
+  margin: 0 10px 0 10px;
+}
+
+#addBtn {
+
+}
+
+#delBtn {
+  justify-content: center;
 }
