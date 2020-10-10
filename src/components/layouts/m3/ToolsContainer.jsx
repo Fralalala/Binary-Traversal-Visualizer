@@ -21,12 +21,14 @@ const ToolsContainer = () => {
     deleteNode,
     delValue,
     setDelValue,
-    maxHeight
+    maxHeight,
+    visualizeInorderTraversal,
+    setInorderAnimation,
   } = visualizerContext;
 
   const gntBtn = () => {
     setNodeTree(); //just sets up a node tree
-    gntBtnClicked(); // traverse using the preorder traversal
+    gntBtnClicked();
   };
 
   return (
@@ -35,10 +37,13 @@ const ToolsContainer = () => {
         <Scroller />
       </div>
       <div className="toolBtns">
-        <Button variant="contained" onClick={() => {
-          console.log(rootNode)
-          console.log(maxHeight) 
-        }}>
+        <Button
+          variant="contained"
+          onClick={() => {
+            gntBtnClicked();
+            setInorderAnimation(true);
+          }}
+        >
           <PlayCircleFilledIcon style={{ fontSize: 50 }} />
         </Button>
         <Button variant="contained" onClick={gntBtn}>
@@ -95,8 +100,8 @@ const ToolsContainer = () => {
           id="delBtn"
           className="child"
           onClick={() => {
-            deleteNode( delValue);
-            gntBtnClicked()
+            deleteNode(delValue);
+            gntBtnClicked();
           }}
         >
           <DeleteIcon id="delIcon" />

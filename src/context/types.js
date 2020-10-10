@@ -6,3 +6,6 @@ export const SET_ADD_VALUE = 'SET_ADD_VALUE'
 export const SET_MAX_HEIGHT = 'SET_MAX_HEIGHT'
 export const SET_DEL_VALUE = 'SET_DEL_VALUE'
 export const SET_TEMP_HEIGHT = 'SET_TEMP_HEIGHT'
+export const SET_INORDER_ANIMATION = 'SET_INORDER_ANIMATION'
+export const SET_COY = "SET_COY"
+export const SET_COX = "SET_COX"

@@ -1,11 +1,22 @@
 class Node {
-  constructor(value = 0, left = null, right = null, visited = false,x = null , y = null) {
+  constructor(
+    value = 0,
+    left = null,
+    right = null,
+    isVisited = false,
+    x = null,
+    y = null,
+    isNew = true,
+    color = null
+  ) {
     this.value = value;
     this.left = left;
     this.right = right;
-    this.visited = visited;
+    this.isVisited = isVisited;
     this.x = x;
     this.y = y;
+    this.isNew = isNew;
+    this.color = color
   }
 }
 

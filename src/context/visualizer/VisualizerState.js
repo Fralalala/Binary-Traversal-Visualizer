@@ -9,6 +9,9 @@ import {
   SET_ADD_VALUE,
   SET_MAX_HEIGHT,
   SET_DEL_VALUE,
+  SET_INORDER_ANIMATION,
+  SET_COX,
+  SET_COY,
 } from "../types";
 
 import Node from "../../Node";
@@ -18,11 +21,14 @@ const VisualizerState = (props) => {
     rootNode: null,
     maxHeight: null, //5
     spacing: 1,
-    tempVal: 1,
+    tempVal: 0,
     gntBtn: false,
     kh: 1,
     addValue: 0,
     delValue: 0,
+    coy: 0,
+    cox: 0,
+    inorderAnimation: false,
   };
   //#region
   const dependentSpacing = 15;
@@ -66,7 +72,6 @@ const VisualizerState = (props) => {
   };
 
   const checkHeight = (node, height) => {
-    
     console.log(node.value);
     if (node.left === null && node.right === null) {
       console.log(height);
@@ -87,20 +92,14 @@ const VisualizerState = (props) => {
   //use dispatch, instead of using state, use a variable outside of state and use it for comparison. Because dispatch
   // is slow, usinga dispatch on a state, then using dispatch again for the next recursion would "nullify" the first dispatch.
   //thus making it seem like the first dispatch never happened. Only use dispatch as the final modification on the state
-  const setHeightOnDelete = (node ) => {
-    
+  const setHeightOnDelete = (node) => {
     tempVal = 0;
     checkHeight(node, 1);
 
-    console.log(tempVal);
     dispatch({
       type: SET_MAX_HEIGHT,
       payload: tempVal,
     });
-    console.log(tempVal);
-    tempVal = 0;
-    
-    console.log(tempVal);
   };
 
   //Deleting Nodes Traversal
@@ -111,7 +110,7 @@ const VisualizerState = (props) => {
         if (parseFloat(node.right.value) === parseFloat(value)) {
           node.right = null;
           console.log("setting height");
-          console.log(state.rootNode)
+          console.log(state.rootNode);
           setHeightOnDelete(state.rootNode);
         } else {
           inorderTraversal(node.right, value, height + 1);
@@ -125,7 +124,7 @@ const VisualizerState = (props) => {
       if (node.left !== null) {
         if (parseFloat(value) === parseFloat(node.left.value)) {
           console.log("setting height on left");
-          
+
           node.left = null;
           setHeightOnDelete(state.rootNode);
         } else {
@@ -136,8 +135,6 @@ const VisualizerState = (props) => {
         return null;
       }
     }
-
-    
   };
 
   const deleteNode = (value) => {
@@ -153,13 +150,14 @@ const VisualizerState = (props) => {
   };
 
   //Setting the visual nodes
-  const preorderTraversal = (
+  const visualizeNodes = (
     node,
     p5,
     isRight,
     currHeight = 1,
     lnw = 0,
-    lnh = 0
+    lnh = 0,
+    lastNode = null
   ) => {
     p5.textAlign(p5.CENTER, p5.CENTER);
     p5.textSize(textSize);
@@ -168,35 +166,158 @@ const VisualizerState = (props) => {
       lnw = p5.width / 2;
       lnh = 50;
 
-      p5.fill(255, 204, 0);
+      node.x = lnw;
+      node.y = lnh;
+
+      if (state.inorderAnimation) {
+        setVisitedNodeColor(node);
+        node.isVisited = true;
+      } else {
+        p5.fill("#28df99");
+      }
       p5.circle(lnw, lnh, rootRad);
 
       p5.fill(p5.color(255, 255, 255));
       p5.text(node.value, lnw, lnh);
     } else {
+      let v0 = p5.createVector(lnw, lnh); //initial vector
+
+      p5.line(
+        v0.x,
+        v0.y,
+        (v0.x += isRight
+          ? dependentSpacing * setNodeSpacing(currHeight)
+          : -dependentSpacing * setNodeSpacing(currHeight)),
+        (v0.y += fixedVertical)
+      );
+
+      let rad = currHeight === 2 ? rootRad : radius;
+
+      p5.fill(255, 204, 0);
+      p5.circle(lnw, lnh, rad);
+
+      p5.fill(p5.color(255, 255, 255));
+      p5.text(lastNode.value, lnw, lnh);
+
       lnw += isRight
         ? dependentSpacing * setNodeSpacing(currHeight)
         : -dependentSpacing * setNodeSpacing(currHeight);
 
-      // console.log(currHeight);
-      p5.fill(255, 204, 0);
-      p5.circle(lnw, (lnh += fixedVertical), radius);
+      lnh += fixedVertical;
+
+      node.x = lnw;
+      node.y = lnh;
+
+      setNewNodeColor(p5, node);
+      p5.circle(lnw, lnh, radius);
 
       p5.fill(p5.color(255, 255, 255));
       p5.text(node.value, lnw, lnh);
     }
 
-    if (currHeight > state.kh) {
-      setHeight(currHeight);
-    }
-
     if (node.left !== null) {
-      preorderTraversal(node.left, p5, false, currHeight + 1, lnw, lnh);
+      visualizeNodes(node.left, p5, false, currHeight + 1, lnw, lnh, node);
     }
 
     if (node.right !== null) {
-      preorderTraversal(node.right, p5, true, currHeight + 1, lnw, lnh);
+      visualizeNodes(node.right, p5, true, currHeight + 1, lnw, lnh, node);
     }
+  };
+
+  const rateOfChange = (node, targetNode) => {
+    let l = 0;
+    let w = 0;
+
+    l = node.x;
+    w = targetNode.y;
+
+    l *= l;
+    w *= w;
+
+    let td = Math.sqrt(l + w);
+
+    let speed = td / 24;
+
+    let tempx = targetNode.x - node.x;
+    let tempy = targetNode.y - node.y;
+
+    if (tempx > tempy) {
+      tempx /= tempx;
+      tempy /= tempx;
+    } else {
+      tempx /= tempy;
+      tempy /= tempy;
+    }
+
+    tempx *= speed;
+    tempy *= speed;
+
+    dispatch({
+      type: SET_COX,
+      payload: tempx,
+    });
+    dispatch({
+      type: SET_COY,
+      payload: tempy,
+    });
+  };
+
+  const visualizeInorderTraversal = async (p5, node, lastNode) => {
+    let rad = node.value === state.rootNode.value ? rootRad : radius;
+
+    await sleep(750).then(() => {
+      if (lastNode !== null) {
+        p5.fill(lastNode.color);
+        rad = lastNode.value === state.rootNode.value ? rootRad : radius;
+        p5.circle(lastNode.x, lastNode.y, rad);
+      }
+
+      setVisitedNodeColor(p5, node);
+      node.isVisited = true;
+      rad = node.value === state.rootNode.value ? rootRad : radius;
+      p5.circle(node.x, node.y, rad);
+
+      p5.fill("red");
+      p5.circle(node.x, node.y + 10, 10);
+    });
+
+    
+
+    if (node.left !== null) {
+      await visualizeInorderTraversal(p5, node.left, node);
+    }
+
+    if (node.right !== null) {
+      await visualizeInorderTraversal(p5, node.right, node);
+    }
+
+    await sleep(750).then(() => {
+      setVisitedNodeColor(p5, node);
+      node.isVisited = true;
+      p5.circle(node.x, node.y, rad);
+
+      p5.fill("red");
+      p5.circle(node.x, node.y + 10, 10);
+
+      setTimeout(() => {
+        setVisitedNodeColor(p5, node);
+        p5.circle(node.x, node.y, rad);
+      }, 750);
+
+      console.log(`printed ${node.value}`);
+    });
+  };
+
+  const resetIsVisited = (node) => {
+    node.isVisited = false;
+
+    if (node.right !== null) resetIsVisited(node.right);
+
+    if (node.left !== null) resetIsVisited(node.left);
+  };
+
+  const setInorderVisual = (p5, node, lastNode) => {
+    visualizeInorderTraversal(p5, node, lastNode);
   };
 
   const setHeight = (currHeight) => {
@@ -209,7 +330,7 @@ const VisualizerState = (props) => {
 
   //Polish: instead of using setNodeSpacing everytime you instance a circle, create a node.height . define the height on add,
   //height is basically the return value of setNodeSpacing. this is good so that u dont have to run this func everytime
-  //you need to instance a circle
+  //you need to instance a circle // u need to run this func because the height changes so it needs to be checked ????
   const setNodeSpacing = (currHeight) => {
     currHeight -= 2;
 
@@ -278,6 +399,50 @@ const VisualizerState = (props) => {
     });
   };
 
+  const setInorderAnimation = (bool) => {
+    dispatch({
+      type: SET_INORDER_ANIMATION,
+      payload: bool,
+    });
+  };
+
+  const setNewNodeColor = (p5, node) => {
+    if (node.isNew) {
+      p5.fill("#28df99");
+      node.isNew = false;
+    } else {
+      p5.fill(255, 204, 0);
+    }
+  };
+
+  const setVisitedNodeColor = (p5, node) => {
+    if (!node.isVisited) {
+      p5.fill("#3b6978");
+      node.color = "#3b6978";
+    } else {
+      p5.fill("blue");
+      node.color = "blue";
+    }
+  };
+
+  // const setCoy = (val) => {
+  //   dispatch({
+  //     type: SET_COY,
+  //     payload: val,
+  //   });
+  // };
+
+  // const setCox = (val) => {
+  //   dispatch({
+  //     type: SET_COX,
+  //     payload: val,
+  //   });
+  // };
+
+  const sleep = (ms) => {
+    return new Promise((resolve) => setTimeout(resolve, ms));
+  };
+
   return (
     <VisualizerContext.Provider
       value={{
@@ -289,16 +454,24 @@ const VisualizerState = (props) => {
         addValue: state.addValue,
         delValue: state.delValue,
         maxHeight: state.maxHeight,
+        inorderAnimation: state.inorderAnimation,
+        coy: state.coy,
+        cox: state.cox,
         setNodeTree,
         inorderTraversal,
         setNodeSpacing,
-        preorderTraversal,
+        visualizeNodes,
         gntBtnClicked,
         setHeight,
         setNode,
         deleteNode,
         setAddValue,
         setDelValue,
+        setInorderAnimation,
+        visualizeInorderTraversal,
+        setInorderVisual,
+        resetIsVisited,
+        rateOfChange,
       }}
     >
       {props.children}
