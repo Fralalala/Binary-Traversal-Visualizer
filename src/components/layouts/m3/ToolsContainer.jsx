@@ -111,13 +111,12 @@ const ToolsContainer = () => {
           <Button
             variant="contained"
             onClick={() => {
-              if(rootNode !== null ) {
-
+              if (rootNode !== null) {
                 gntBtnClicked();
 
                 setAnimation(true);
               } else {
-                alert('Please add a node')
+                alert("Please add a node");
               }
             }}
           >
@@ -127,11 +126,13 @@ const ToolsContainer = () => {
         <Tooltip title="Reset Binary Tree">
           <Button
             variant="contained"
-            onClick={ () => {
+            onClick={() => {
               console.log(animation);
               if (!animation) {
                 // gntBtn();
-                 deleteNode(rootNode.value);
+                if (rootNode !== null) {
+                  deleteNode(rootNode.value);
+                }
 
                 gntBtnClicked();
               } else {
@@ -167,11 +168,15 @@ const ToolsContainer = () => {
           id="addBtn"
           className="child"
           onClick={() => {
-            if (!animation) {
-              setNode(rootNode, addValue);
-              gntBtnClicked();
+            if (addValue === "") {
+              alert("Enter a value");
             } else {
-              alert("animation is ongoing");
+              if (!animation) {
+                setNode(rootNode, addValue);
+                gntBtnClicked();
+              } else {
+                alert("animation is ongoing");
+              }
             }
           }}
         >
@@ -199,11 +204,15 @@ const ToolsContainer = () => {
           id="delBtn"
           className="child"
           onClick={() => {
-            if (!animation) {
-              deleteNode(delValue);
-              gntBtnClicked();
+            if (delValue === "") {
+              alert("Enter a value");
             } else {
-              alert("animation is ongoing");
+              if (!animation) {
+                deleteNode(delValue);
+                gntBtnClicked();
+              } else {
+                alert("animation is ongoing");
+              }
             }
           }}
         >
