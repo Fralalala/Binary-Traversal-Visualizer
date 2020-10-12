@@ -9,9 +9,13 @@ import {
   SET_ADD_VALUE,
   SET_MAX_HEIGHT,
   SET_DEL_VALUE,
-  SET_INORDER_ANIMATION,
+  SET_ANIMATION,
   SET_COX,
   SET_COY,
+  SET_VISUALIZER,
+  SET_CANCEL,
+  SET_BASE_HEIGHT,
+  SET_BASE_WIDTH,
 } from "../types";
 
 import Node from "../../Node";
@@ -28,17 +32,38 @@ const VisualizerState = (props) => {
     delValue: 0,
     coy: 0,
     cox: 0,
-    inorderAnimation: false,
+    animation: false,
+    cancel: true,
+    visualizer: 0,
+    baseHeight: 0,
+    baseWidth: 0,
   };
   //#region
-  const dependentSpacing = 15;
-  const fixedVertical = 125;
-  const radius = 50;
-  const rootRad = 80;
-  const textSize = 25;
+  let dependentSpacing = 15;
+  let fixedVertical = 125;
+  let radius = 50;
+  let rootRad = 80;
+  let textSize = 25;
   let tempVal = 0;
   //#endregion
   const [state, dispatch] = useReducer(VisualizerReducer, initialState);
+
+  const changeValues = () => {
+
+    let wid = Math.min((window.innerWidth + (.25 * state.baseWidth)), state.baseWidth)
+    let hei = Math.min((window.innerHeight + (.25 * state.baseHeight)), state.baseHeight)
+    if (state.baseWidth < window.innerWidth) {
+      setBaseWidth(window.innerWidth);
+    }
+    if (state.baseHeight < window.innerHeight) {
+      setBaseHeight(window.innerHeight);
+    }
+    dependentSpacing = (window.innerWidth / state.baseWidth) * 15;
+    fixedVertical = (hei / state.baseHeight) * 125;
+    radius = (wid / state.baseWidth) * 50;
+    textSize = (wid / state.baseWidth) * 25;
+    rootRad = (wid / state.baseWidth) * 85;
+  };
 
   const generateNodeTree = (node, height = 1) => {
     if (height === state.maxHeight) {
@@ -67,8 +92,6 @@ const VisualizerState = (props) => {
       type: GENERATE_NODE_TREE,
       payload: newNode,
     });
-
-    console.log(state.rootNode);
   };
 
   const checkHeight = (node, height) => {
@@ -116,7 +139,7 @@ const VisualizerState = (props) => {
           inorderTraversal(node.right, value, height + 1);
         }
       } else {
-        console.log("value to be deleted not found");
+        alert('Node to be Deleted not found')
         return null;
       }
     } else {
@@ -131,7 +154,7 @@ const VisualizerState = (props) => {
           inorderTraversal(node.left, value, height + 1);
         }
       } else {
-        console.log("value to be deleted not found");
+        alert('Node to be Deleted not found')
         return null;
       }
     }
@@ -173,7 +196,7 @@ const VisualizerState = (props) => {
         setVisitedNodeColor(node);
         node.isVisited = true;
       } else {
-        p5.fill("#28df99");
+        p5.fill("#fca652");
       }
       p5.circle(lnw, lnh, rootRad);
 
@@ -264,12 +287,15 @@ const VisualizerState = (props) => {
 
   const visualizeInorderTraversal = async (p5, node, lastNode) => {
     let rad = node.value === state.rootNode.value ? rootRad : radius;
+    p5.textSize(textSize);
 
     await sleep(750).then(() => {
       if (lastNode !== null) {
         p5.fill(lastNode.color);
         rad = lastNode.value === state.rootNode.value ? rootRad : radius;
         p5.circle(lastNode.x, lastNode.y, rad);
+        p5.fill(p5.color(255, 255, 255));
+        p5.text(lastNode.value, lastNode.x, lastNode.y);
       }
 
       setVisitedNodeColor(p5, node);
@@ -277,18 +303,15 @@ const VisualizerState = (props) => {
       rad = node.value === state.rootNode.value ? rootRad : radius;
       p5.circle(node.x, node.y, rad);
 
-      p5.fill("red");
+      p5.fill(p5.color(255, 255, 255));
+      p5.text(node.value, node.x, node.y);
+
+      p5.fill("#de4463");
       p5.circle(node.x, node.y + 10, 10);
     });
 
-    
-
     if (node.left !== null) {
       await visualizeInorderTraversal(p5, node.left, node);
-    }
-
-    if (node.right !== null) {
-      await visualizeInorderTraversal(p5, node.right, node);
     }
 
     await sleep(750).then(() => {
@@ -296,15 +319,136 @@ const VisualizerState = (props) => {
       node.isVisited = true;
       p5.circle(node.x, node.y, rad);
 
-      p5.fill("red");
+      p5.fill(p5.color(255, 255, 255));
+      p5.text(node.value, node.x, node.y);
+
+      p5.fill("#de4463");
       p5.circle(node.x, node.y + 10, 10);
 
       setTimeout(() => {
         setVisitedNodeColor(p5, node);
         p5.circle(node.x, node.y, rad);
+
+        p5.fill(p5.color(255, 255, 255));
+        p5.text(node.value, node.x, node.y);
       }, 750);
 
-      console.log(`printed ${node.value}`);
+      console.log(`${node.value}`);
+    });
+
+    if (node.right !== null) {
+      await visualizeInorderTraversal(p5, node.right, node);
+    }
+  };
+
+  const visualizePreorderTraversal = async (p5, node, lastNode) => {
+    let rad = node.value === state.rootNode.value ? rootRad : radius;
+
+    await sleep(750).then(() => {
+      if (lastNode !== null) {
+        p5.fill(lastNode.color);
+        rad = lastNode.value === state.rootNode.value ? rootRad : radius;
+        p5.circle(lastNode.x, lastNode.y, rad);
+        p5.fill(p5.color(255, 255, 255));
+        p5.text(lastNode.value, lastNode.x, lastNode.y);
+      }
+
+      setVisitedNodeColor(p5, node);
+      node.isVisited = true;
+      rad = node.value === state.rootNode.value ? rootRad : radius;
+      p5.circle(node.x, node.y, rad);
+
+      p5.fill(p5.color(255, 255, 255));
+      p5.text(node.value, node.x, node.y);
+
+      p5.fill("#de4463");
+      p5.circle(node.x, node.y + 10, 10);
+    });
+
+    await sleep(750).then(() => {
+      setVisitedNodeColor(p5, node);
+      node.isVisited = true;
+      p5.circle(node.x, node.y, rad);
+
+      p5.fill(p5.color(255, 255, 255));
+      p5.text(node.value, node.x, node.y);
+
+      p5.fill("#de4463");
+      p5.circle(node.x, node.y + 10, 10);
+
+      setTimeout(() => {
+        setVisitedNodeColor(p5, node);
+        p5.circle(node.x, node.y, rad);
+        
+      p5.fill(p5.color(255, 255, 255));
+      p5.text(node.value, node.x, node.y);
+
+      }, 750);
+
+      console.log(`${node.value}`);
+    });
+
+    if (node.left !== null) {
+      await visualizePreorderTraversal(p5, node.left, node);
+    }
+
+    if (node.right !== null) {
+      await visualizePreorderTraversal(p5, node.right, node);
+    }
+  };
+
+  const visualizePostordertraversal = async (p5, node, lastNode) => {
+    let rad = node.value === state.rootNode.value ? rootRad : radius;
+
+    await sleep(750).then(() => {
+      if (lastNode !== null) {
+        p5.fill(lastNode.color);
+        rad = lastNode.value === state.rootNode.value ? rootRad : radius;
+        p5.circle(lastNode.x, lastNode.y, rad);
+        p5.fill(p5.color(255, 255, 255));
+        p5.text(lastNode.value, lastNode.x, lastNode.y);
+      }
+
+      setVisitedNodeColor(p5, node);
+      node.isVisited = true;
+      rad = node.value === state.rootNode.value ? rootRad : radius;
+      p5.circle(node.x, node.y, rad);
+
+      p5.fill(p5.color(255, 255, 255));
+      p5.text(node.value, node.x, node.y);
+
+      p5.fill("#de4463");
+      p5.circle(node.x, node.y + 10, 10);
+    });
+
+    if (node.left !== null) {
+      await visualizePostordertraversal(p5, node.left, node);
+    }
+
+    if (node.right !== null) {
+      await visualizePostordertraversal(p5, node.right, node);
+    }
+
+    await sleep(750).then(() => {
+      setVisitedNodeColor(p5, node);
+      node.isVisited = true;
+      p5.circle(node.x, node.y, rad);
+      
+      p5.fill(p5.color(255, 255, 255));
+      p5.text(node.value, node.x, node.y);
+
+      p5.fill("#de4463");
+      p5.circle(node.x, node.y + 10, 10);
+
+      setTimeout(() => {
+        setVisitedNodeColor(p5, node);
+        p5.circle(node.x, node.y, rad);
+        
+        p5.fill(p5.color(255, 255, 255));
+        p5.text(node.value, node.x, node.y);
+      }, 750);
+
+      console.log(`${node.value}`);
     });
   };
 
@@ -316,8 +460,30 @@ const VisualizerState = (props) => {
     if (node.left !== null) resetIsVisited(node.left);
   };
 
-  const setInorderVisual = (p5, node, lastNode) => {
-    visualizeInorderTraversal(p5, node, lastNode);
+  const setTraversal = async (index, p5, node, lastNode) => {
+    switch (index) {
+      case 0:
+        console.log("inorder");
+        await visualizeInorderTraversal(p5, node, lastNode);
+        break;
+
+      case 1:
+        console.log("preorder");
+
+        await visualizePreorderTraversal(p5, node, lastNode);
+        break;
+
+      case 2:
+        console.log("postorder");
+
+        await visualizePostordertraversal(p5, node, lastNode);
+        break;
+
+      default:
+        console.log(index);
+        break;
+    }
+    setAnimation(false); //fix the mp during animation
   };
 
   const setHeight = (currHeight) => {
@@ -359,6 +525,15 @@ const VisualizerState = (props) => {
         payload: 1,
       });
     } else {
+      if (parseFloat(value) === parseFloat(node.value)) {
+        alert("value already in the tree");
+        return null;
+      } else {
+        if (currHeight + 1 > 5) {
+          alert("Height limit of up to 5 only");
+          return null;
+        }
+      }
       if (parseFloat(value) > parseFloat(node.value)) {
         if (node.right !== null) {
           addNode(node.right, value, currHeight + 1);
@@ -399,9 +574,9 @@ const VisualizerState = (props) => {
     });
   };
 
-  const setInorderAnimation = (bool) => {
+  const setAnimation = (bool) => {
     dispatch({
-      type: SET_INORDER_ANIMATION,
+      type: SET_ANIMATION,
       payload: bool,
     });
   };
@@ -420,9 +595,37 @@ const VisualizerState = (props) => {
       p5.fill("#3b6978");
       node.color = "#3b6978";
     } else {
-      p5.fill("blue");
-      node.color = "blue";
+      p5.fill("#a2d5f2");
+      node.color = "#a2d5f2";
     }
+  };
+
+  const setCancel = (val) => {
+    dispatch({
+      type: SET_CANCEL,
+      payload: val,
+    });
+  };
+
+  const setBaseHeight = (val) => {
+    dispatch({
+      type: SET_BASE_HEIGHT,
+      payload: val,
+    });
+  };
+
+  const setBaseWidth = (val) => {
+    dispatch({
+      type: SET_BASE_WIDTH,
+      payload: val,
+    });
+  };
+
+  const setVisualizer = (index) => {
+    dispatch({
+      type: SET_VISUALIZER,
+      payload: index,
+    });
   };
 
   // const setCoy = (val) => {
@@ -454,9 +657,11 @@ const VisualizerState = (props) => {
         addValue: state.addValue,
         delValue: state.delValue,
         maxHeight: state.maxHeight,
-        inorderAnimation: state.inorderAnimation,
+        animation: state.animation,
+        visualizer: state.visualizer,
         coy: state.coy,
         cox: state.cox,
+        cancel: state.cancel,
         setNodeTree,
         inorderTraversal,
         setNodeSpacing,
@@ -467,11 +672,16 @@ const VisualizerState = (props) => {
         deleteNode,
         setAddValue,
         setDelValue,
-        setInorderAnimation,
+        setAnimation,
         visualizeInorderTraversal,
-        setInorderVisual,
+        setTraversal,
         resetIsVisited,
         rateOfChange,
+        setVisualizer,
+        setCancel,
+        setBaseHeight,
+        setBaseWidth,
+        changeValues,
       }}
     >
       {props.children}

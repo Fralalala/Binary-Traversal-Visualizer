@@ -1,38 +1,89 @@
 .home-container {
   height: calc(100vh - 76px);
-  // height: max-content;
-  // width: max-content;
-}
-
-ul {
-  list-style: none;
-  height: 100%;
-  padding: 20px;
-  display: grid;
-  grid-template-columns: 3fr 1fr;
-  grid-template-rows: minmax(150px, 1fr);
-  gap: 20px;
-}
-
-.m-1 {
-  background-color: lightcoral;
-  width: 300px;
-
+  ul {
+    list-style: none;
+    width: 100%;
+    height: 100%;
+    padding: 20px;
+    display: grid;
+    grid-template-columns: 3fr 1fr;
+    // grid-template-rows: minmax(150px, 1fr);
+    gap: 20px;
+  }
 }
 
 .m-2 {
-  background-color: lightgreen;
-  overflow-wrap: break-word;
-  min-width: 500px;
+  height: 734px;
 }
 
 .m-3 {
-  display: grid;
-  grid-template-columns: 1fr;
-  grid-template-rows: auto 1fr;
   border: 5px dotted lightpink;
   border-style: solid;
   border-radius: 5px;
 }
 
- 
+.legendItem {
+  p {
+    align-self: center;
+  }
+}
+
+.items {
+  display: grid;
+  grid-template: 150px / auto auto auto;
+
+  div {
+    height: max-content;
+    width: max-content;
+  }
+}
+
+.dot {
+  height: 50px;
+  width: 50px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.visited {
+  background-color: #3b6978;
+}
+
+.printed {
+  background-color: #a2d5f2;
+}
+
+.node {
+  background-color: #fca652;
+}
+
+.traverser {
+  background-color: #de4463;
+}
+
+.newNode {
+  background-color: #28df99;
+}
+
+@media (max-width: 1450px) {
+  .home-container {
+    ul {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .dot {
+    height: 100px;
+    width: 100px;
+    border-radius: 50%;
+    display: inline-block;
+  }
+  
+  .legendItem {
+    text-align: center;
+  }
+
+  .m-2 {
+    margin-bottom: 20px;
+  }
+}
