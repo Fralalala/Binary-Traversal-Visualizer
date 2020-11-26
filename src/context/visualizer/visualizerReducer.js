@@ -7,7 +7,12 @@ import {
   SET_DEL_VALUE,
   SET_MAX_HEIGHT,
   SET_COX,
-  SET_COY, SET_ANIMATION, SET_CANCEL, SET_VISUALIZER, SET_BASE_HEIGHT, SET_BASE_WIDTH
+  SET_COY,
+  SET_ANIMATION,
+  SET_CANCEL,
+  SET_VISUALIZER,
+  SET_BASE_HEIGHT,
+  SET_BASE_WIDTH,
 } from "../types";
 
 export default (state, action) => {
@@ -36,37 +41,36 @@ export default (state, action) => {
         ...state,
         delValue: action.payload,
       };
-    
+
     case SET_ANIMATION:
       return {
         ...state,
-        animation: action.payload
-      }
-    
+        animation: action.payload,
+      };
+
     case SET_VISUALIZER:
       return {
         ...state,
-        visualizer: action.payload
-      }
-    
+        visualizer: action.payload,
+      };
+
     case SET_CANCEL:
       return {
         ...state,
-        cancel: action.payload
-      }
-    
-      
+        cancel: action.payload,
+      };
+
     case SET_BASE_HEIGHT:
       return {
         ...state,
-        baseHeight: action.payload
-      }
-    
+        baseHeight: action.payload,
+      };
+
     case SET_BASE_WIDTH:
       return {
         ...state,
-        baseWidth: action.payload
-      }
+        baseWidth: action.payload,
+      };
 
     case GNT_BTN_CLICKED:
       return {
@@ -79,18 +83,18 @@ export default (state, action) => {
         ...state,
         kh: 666,
       };
-    
+
     case SET_COY:
       return {
         ...state,
-        coy: action.payload
-      }
-    
-      case SET_COX:
-        return {
-          ...state,
-          cox: action.payload
-        }
+        coy: action.payload,
+      };
+
+    case SET_COX:
+      return {
+        ...state,
+        cox: action.payload,
+      };
 
     default:
       return state;

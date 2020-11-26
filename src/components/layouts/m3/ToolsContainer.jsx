@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useRef } from "react";
 // import Scroller from "./Scroller";
 import PlayCircleFilledIcon from "@material-ui/icons/PlayCircleFilled";
 import RotateLeftIcon from "@material-ui/icons/RotateLeft";
@@ -38,8 +38,6 @@ const ToolsContainer = () => {
     "Postorder Traversal",
   ];
 
-  //code copied form  from material ui
-
   const useStyles = makeStyles((theme) => ({
     root: {
       backgroundColor: theme.palette.background.paper,
@@ -64,6 +62,9 @@ const ToolsContainer = () => {
   const handleClose = () => {
     setAnchorEl(null);
   };
+
+  const addField = useRef(null);
+  const deleteField = useRef(null);
 
   return (
     <div className="toolsContainer">
@@ -112,9 +113,12 @@ const ToolsContainer = () => {
             variant="contained"
             onClick={() => {
               if (rootNode !== null) {
-                gntBtnClicked();
-
-                setAnimation(true);
+                if (!animation) {
+                  setAnimation(true);
+                  gntBtnClicked(true);
+                } else {
+                  alert("Animation is Already running");
+                }
               } else {
                 alert("Please add a node");
               }
@@ -131,10 +135,10 @@ const ToolsContainer = () => {
               if (!animation) {
                 // gntBtn();
                 if (rootNode !== null) {
-                  deleteNode(rootNode.value);
+                  // deleteNode(rootNode.value);
                 }
 
-                gntBtnClicked();
+                // gntBtnClicked(true);
               } else {
                 alert(
                   "cant reset binary tree during traversal, please wait for traversal to finish"
@@ -153,11 +157,27 @@ const ToolsContainer = () => {
             label="Add Number"
             type="number"
             value={addValue}
+            ref={addField}
             onChange={(e) => {
               setAddValue(e.target.value);
             }}
             InputLabelProps={{
               shrink: true,
+            }}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                if (addValue === "") {
+                  alert("Enter a value");
+                } else {
+                  if (!animation) {
+                    setNode(rootNode, addValue);
+                    // gntBtnClicked(true);
+                  } else {
+                    alert("animation is ongoing");
+                  }
+                }
+                setAddValue("");
+              }
             }}
           />
         </div>
@@ -167,13 +187,14 @@ const ToolsContainer = () => {
           color="primary"
           id="addBtn"
           className="child"
+          ref={addField}
           onClick={() => {
             if (addValue === "") {
               alert("Enter a value");
             } else {
               if (!animation) {
                 setNode(rootNode, addValue);
-                gntBtnClicked();
+                gntBtnClicked(true);
               } else {
                 alert("animation is ongoing");
               }
@@ -195,6 +216,21 @@ const ToolsContainer = () => {
             InputLabelProps={{
               shrink: true,
             }}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                if (delValue === "") {
+                  alert("Enter a value");
+                } else {
+                  if (!animation) {
+                    deleteNode(delValue);
+                    gntBtnClicked(true);
+                  } else {
+                    alert("animation is ongoing");
+                  }
+                }
+                setDelValue("");
+              }
+            }}
           />
         </div>
 
@@ -209,7 +245,7 @@ const ToolsContainer = () => {
             } else {
               if (!animation) {
                 deleteNode(delValue);
-                gntBtnClicked();
+                gntBtnClicked(true);
               } else {
                 alert("animation is ongoing");
               }

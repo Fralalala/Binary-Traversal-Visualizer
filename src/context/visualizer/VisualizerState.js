@@ -76,10 +76,11 @@ const VisualizerState = (props) => {
     return height === 1 ? new Node(888) : node;
   };
 
-  const gntBtnClicked = () => {
+  const gntBtnClicked = (bool) => {
+    console.log('this happened')
     dispatch({
       type: GNT_BTN_CLICKED,
-      payload: !state.gntBtn,
+      payload: bool,
     });
   };
 
@@ -215,7 +216,6 @@ const VisualizerState = (props) => {
       );
 
       let rad = currHeight === 2 ? rootRad : radius;
-
       p5.fill(255, 204, 0);
       p5.circle(lnw, lnh, rad);
 
@@ -627,20 +627,6 @@ const VisualizerState = (props) => {
       payload: index,
     });
   };
-
-  // const setCoy = (val) => {
-  //   dispatch({
-  //     type: SET_COY,
-  //     payload: val,
-  //   });
-  // };
-
-  // const setCox = (val) => {
-  //   dispatch({
-  //     type: SET_COX,
-  //     payload: val,
-  //   });
-  // };
 
   const sleep = (ms) => {
     return new Promise((resolve) => setTimeout(resolve, ms));
